@@ -1,0 +1,28 @@
+<form id="clientform">
+  <label>Coloque seu nome</label>
+  <input type="text" id="clientName" required>
+
+  <button type="submit">Criar Liga</button>
+</form>
+
+<script>
+document.getElementById("clientform").addEventListener("submit", async function(event) {
+  event.preventDefault();
+
+  const name = document.getElementById("clientName").value;
+
+  const response = await fetch("http://localhost:8000/clients", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      name: name
+    })
+  });
+
+  const data = await response.json();
+
+  alert(data.message);
+});
+</script>
