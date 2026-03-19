@@ -18,9 +18,11 @@ def get_next_operator(client_id):
 
 def match_call():
     client_id = r.lindex("queue:clients", 0)
-    operator_id = get_next_operator(client_id) if client_id else None
-
-    print(f"Call {client_id} received.")
+    if client_id: 
+        operator_id = get_next_operator(client_id) 
+        print(f"Call {client_id} received.") 
+    else: 
+        return None
 
     if not client_id or not operator_id:
         print(f"Call {client_id} waiting in line") if not operator_id else None

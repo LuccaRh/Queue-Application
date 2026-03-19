@@ -6,7 +6,6 @@ def create_ringing_call(client_id, operator_id):
 
     r.sadd(f"client:{client_id}:tried", operator_id)
     
-    r.hset(f"client:{client_id}:tried", mapping={operator_id: True})
     call_id = r.incr("ringing_call:id")
     
     r.rpush("list:ringing_calls", call_id)
