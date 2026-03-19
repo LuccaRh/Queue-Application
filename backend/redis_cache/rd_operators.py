@@ -3,7 +3,7 @@ from backend.redis_cache.queue_logic import match_call
 
 #operator status: available, ringing, on-call
 
-def set_operator_available(operator_id, name):
+def add_operator(operator_id, name):
     r.hset(f"operator:{operator_id}", mapping={
         "id": operator_id,
         "name": name,

@@ -2,13 +2,13 @@ from twisted.web import server
 import json
 from .base_resource import BaseResource
 from .db_conection import dbpool
-from ..redis_cache.rd_clients import add_client
+from ..redis_cache.rd_operators import add_operator
 
-def insert_client(txn, name):
-    txn.execute("INSERT INTO clients (name) VALUES (%s) RETURNING id", (name,))
+def insert_operator(txn, name):
+    txn.execute("INSERT INTO operators (name) VALUES (%s) RETURNING id", (name,))
     return txn.fetchone()[0]
 
-class ClientResource(BaseResource):
+class OperatorResource(BaseResource):
     
     def render_POST(self, request):
         self._set_cors_headers(request)
@@ -16,12 +16,12 @@ class ClientResource(BaseResource):
         data = json.loads(request.content.read())
         name = data.get("name")
 
-        d = dbpool.runInteraction(insert_client, name)
+        d = dbpool.runInteraction(insert_operator, name)
 
-        def success(client_id):
+        def success(operator_id):
             request.setHeader(b"content-type", b"application/json")
             request.write(json.dumps({"status": "ok", "message": "nome nome nome!"}).encode())
-            add_client(client_id, name)
+            add_operator(operator_id, name)
             request.finish()
 
         def error(err):

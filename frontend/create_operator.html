@@ -1,0 +1,28 @@
+<form id="operatorform">
+  <label>Name:</label>
+  <input type="text" id="operatorName" required>
+
+  <button type="submit">Create operator</button>
+</form>
+
+<script>
+document.getElementById("operatorform").addEventListener("submit", async function(event) {
+  event.preventDefault();
+
+  const name = document.getElementById("operatorName").value;
+
+  const response = await fetch("http://localhost:8000/operators", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      name: name
+    })
+  });
+
+  const data = await response.json();
+  console.log(data);
+  alert(data.message);
+});
+</script>

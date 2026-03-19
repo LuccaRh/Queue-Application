@@ -15,6 +15,8 @@ services:
       - "8000:8000"
       - "5678:5678"
     restart: always
+    environment:
+      DEBUG: ${DEBUG}
 
   db:
     image: postgres:15

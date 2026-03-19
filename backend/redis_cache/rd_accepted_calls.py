@@ -1,4 +1,4 @@
-from redis_server import r
+from backend.redis_cache.redis_server import r
 
 def create_accepted_call(client_id, operator_id):
     call_id = r.incr("accepted_call:id")
