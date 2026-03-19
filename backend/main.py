@@ -1,8 +1,8 @@
 from twisted.web import server, resource
 from twisted.internet import reactor
-from Resources.clients import ClientResource
+from resources.clients import ClientResource
 
-from redis import connect_redis
+from redis_cache.redis_server import connect_redis
 connect_redis()
 
 root = resource.Resource()

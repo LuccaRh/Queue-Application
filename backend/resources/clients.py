@@ -1,10 +1,11 @@
 from twisted.web import server
 import json
-from base_resource import BaseResource
-from db_conection import dbpool
+from .base_resource import BaseResource
+from .db_conection import dbpool
 
-def insert_user(txn, name):
-    txn.execute("INSERT INTO clients (name) VALUES (%s)", (name,))
+def insert_client(txn, name):
+    txn.execute("INSERT INTO clients (name) VALUES (%s) RETURNING id", (name,))
+    return txn.fetchone()[0]
 
 class ClientResource(BaseResource):
     
@@ -14,7 +15,7 @@ class ClientResource(BaseResource):
         data = json.loads(request.content.read())
         name = data.get("name")
 
-        d = dbpool.runInteraction(insert_user, name)
+        d = dbpool.runInteraction(insert_client, name)
 
         def success(_):
             request.setHeader(b"content-type", b"application/json")

@@ -1,9 +1,9 @@
-from redis_server import r
-from backend.redis.rd_ringing_calls import create_ringing_call
-from backend.redis.rd_ringing_calls import find_client_id_for_ringing_call
-from backend.redis.rd_ringing_calls import remove_ringing_call
-from backend.redis.rd_accepted_calls import create_accepted_call
-from backend.redis.rd_accepted_calls import find_accepted_call_for_operator
+from backend.redis_cache.redis_server import r
+from backend.redis_cache.rd_ringing_calls import create_ringing_call
+from backend.redis_cache.rd_ringing_calls import find_client_id_for_ringing_call
+from backend.redis_cache.rd_ringing_calls import remove_ringing_call
+from backend.redis_cache.rd_accepted_calls import create_accepted_call
+from backend.redis_cache.rd_accepted_calls import find_accepted_call_for_operator
 
 def get_next_operator(client_id):
     operators = r.lrange("queue:operators", 0, -1)

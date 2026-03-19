@@ -1,5 +1,5 @@
-from redis_server import r
-from queue_logic import match_call
+from backend.redis_cache.redis_server import r
+from backend.redis_cache.queue_logic import match_call
 
 #operator status: available, ringing, on-call
 

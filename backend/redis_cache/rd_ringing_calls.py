@@ -1,4 +1,4 @@
-from redis_server import r
+from backend.redis_cache.redis_server import r
 
 def create_ringing_call(client_id, operator_id):
     r.hset(f"client:{client_id}", "status", "ringing")
