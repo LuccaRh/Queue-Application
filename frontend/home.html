@@ -1,8 +1,8 @@
 <form id="clientform">
-  <label>Coloque seu nome</label>
+  <label>Name:</label>
   <input type="text" id="clientName" required>
 
-  <button type="submit">Criar Liga</button>
+  <button type="submit">Create client</button>
 </form>
 
 <script>
@@ -22,7 +22,7 @@ document.getElementById("clientform").addEventListener("submit", async function(
   });
 
   const data = await response.json();
-
+  console.log(data);
   alert(data.message);
 });
 </script>

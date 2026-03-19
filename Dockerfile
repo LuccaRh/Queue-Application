@@ -6,4 +6,4 @@ COPY backend/requirements.txt .
 
 RUN pip install -r requirements.txt
 
-CMD ["python", "backend/main.py"]
+CMD ["watchmedo", "auto-restart", "--pattern=*.py", "--recursive", "--", "python", "backend/main.py"]
