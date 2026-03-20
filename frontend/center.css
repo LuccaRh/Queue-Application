@@ -87,3 +87,41 @@ body {
       color: #666;
       margin-top: 12px;
     }
+
+    .chat-container {
+      margin-top: 18px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: #f9f9fb;
+      padding: 14px;
+      max-width: 100%;
+      box-shadow: 0 0 12px rgba(10, 10, 10, 0.05);
+    }
+
+    .chat-container h2 {
+      margin: 0 0 8px;
+      font-size: 18px;
+    }
+
+    .message-area {
+      min-height: 180px;
+      max-height: 300px;
+      overflow-y: auto;
+      border: 1px solid #e1e1e7;
+      border-radius: 6px;
+      padding: 10px;
+      background: #fff;
+    }
+
+    .message-area div {
+      margin-bottom: 8px;
+      padding: 8px 10px;
+      background: #eef2ff;
+      border-radius: 6px;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .message-area div:last-child {
+      margin-bottom: 0;
+    }

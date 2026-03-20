@@ -11,7 +11,8 @@ def create_accepted_call(client_id, operator_id):
     })
 
     r.hset(f"client:{client_id}", mapping={
-        "status": "on-call"
+        "status": "on-call",
+        "accepted_call_id": call_id
     })
 
     r.hset(f"operator:{operator_id}", mapping={

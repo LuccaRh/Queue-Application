@@ -7,6 +7,9 @@ import os
 from autobahn.twisted.resource import WebSocketResource
 from autobahn.twisted.websocket import WebSocketServerFactory
 from backend.websocket.ws import QueueWSProtocol
+from backend.websocket.minichat import ChatServerProtocol
+from backend.resources.call_control import HangupClientResource
+from backend.resources.call_control import AcceptResource, RejectResource
 
 if os.getenv("DEBUG") == "1":
     import debugpy
@@ -18,19 +21,21 @@ if os.getenv("DEBUG") == "1":
 
 connect_redis()
 
-from backend.resources.state import StateResource
-from backend.resources.call_control import AcceptResource, RejectResource
 
 root = resource.Resource()
 root.putChild(b"clients", ClientResource())
 root.putChild(b"operators", OperatorResource())
-root.putChild(b"state", StateResource())
 root.putChild(b"accept", AcceptResource())
 root.putChild(b"reject", RejectResource())
+root.putChild(b"hangup_client", HangupClientResource())
 
 ws_factory = WebSocketServerFactory("ws://localhost:8000/ws")
 ws_factory.protocol = QueueWSProtocol
 root.putChild(b"ws", WebSocketResource(ws_factory))
+
+ws_factory_chat = WebSocketServerFactory("ws://localhost:8000/chat")
+ws_factory_chat.protocol = ChatServerProtocol
+root.putChild(b"chat", WebSocketResource(ws_factory_chat))
 
 site = server.Site(root)
 

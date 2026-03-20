@@ -1,6 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
   const socket = new WebSocket("ws://localhost:8000/ws");
+  const chatSocket = new WebSocket("ws://localhost:8000/chat");
 
+  //main socket handlers
   socket.onopen = function() {
     const status = document.getElementById("wsStatus");
     if (status) status.textContent = "✓ Connected";
@@ -28,6 +30,31 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     } catch (err) {
       console.error("Parse error:", err);
+    }
+  };
+
+  //chat socket handlers
+  chatSocket.onopen = function() {
+    console.log("Chat socket connected");
+  };
+
+
+  chatSocket.onclose = function() {
+    console.log("Chat socket disconnected");
+  };
+
+  chatSocket.onmessage = function(event) {
+    try {
+      const msg = JSON.parse(event.data);
+      if (msg.type === "chat") {
+        const messageArea = document.getElementById('message-area');
+        const messageElement = document.createElement('div');
+        messageElement.textContent = msg.message || "(empty)";
+        messageArea.appendChild(messageElement);
+        messageArea.scrollTop = messageArea.scrollHeight;
+      }
+    } catch (err) {
+      console.error("Chat parse error:", err);
     }
   };
 
@@ -62,7 +89,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         const data = await response.json();
         console.log(data);
-        if (data.message) alert(data.message);
         document.getElementById("operatorName").value = "";
       } catch (err) {
         console.error("Error creating operator:", err);
@@ -89,6 +115,7 @@ function updateClientList(clients) {
     li.innerHTML = `
       <strong>#${index + 1} - ${client.name || client.id}</strong><br/>
       <small>Id: ${client.id} | Status: ${client.status} | Tried: ${tried}</small>
+      <button onclick="hangupCall('${client.id}')">Hang up</button>
     `;
     ul.appendChild(li);
   });
@@ -127,8 +154,30 @@ function updateRingingList(calls) {
     li.innerHTML = `
       <strong>Ringing ID: ${call.id}</strong><br/>
       <small>Operator: ${call.operator.name} (${call.operator.id}) → Client: ${call.client.name} (${call.client.id})</small><br/>
+      <small> OperatorStatus: ${call.operator.status} | ClientStatus: ${call.client.status}</small><br/>
       <button onclick="acceptCall('${call.operator.id}')">Accept</button>
       <button onclick="rejectCall('${call.operator.id}')">Reject</button>
+    `;
+    ul.appendChild(li);
+  });
+}
+
+function updateAcceptedList(calls) {
+  const ul = document.getElementById("accepted");
+  ul.innerHTML = "";
+
+  if (calls.length === 0) {
+    ul.innerHTML = "<li><em>No accepted calls</em></li>";
+    return;
+  }
+
+  calls.forEach((call) => {
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <strong>Accepted ID: ${call.id}</strong><br/>
+      <small>Operator: ${call.operator.name} (${call.operator.id}) → Client: ${call.client.name} (${call.client.id})</small>
+      <small> OperatorStatus: ${call.operator.status} | ClientStatus: ${call.client.status}</small><br/>
+      <button onclick="hangupCall('${call.client.id}')">Hang up</button>
     `;
     ul.appendChild(li);
   });
@@ -158,21 +207,14 @@ async function rejectCall(operatorId) {
   }
 }
 
-function updateAcceptedList(calls) {
-  const ul = document.getElementById("accepted");
-  ul.innerHTML = "";
-
-  if (calls.length === 0) {
-    ul.innerHTML = "<li><em>No accepted calls</em></li>";
-    return;
+async function hangupCall(clientId) {
+  try {
+    await fetch("http://localhost:8000/hangup_client", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({client: clientId})
+    });
+  } catch (err) {
+    console.error("Error hanging up call:", err);
   }
-
-  calls.forEach((call) => {
-    const li = document.createElement("li");
-    li.innerHTML = `
-      <strong>Accepted ID: ${call.id}</strong><br/>
-      <small>Operator: ${call.operator.name} (${call.operator.id}) → Client: ${call.client.name} (${call.client.id})</small>
-    `;
-    ul.appendChild(li);
-  });
 }

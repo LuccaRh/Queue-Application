@@ -3,7 +3,6 @@ from backend.websocket.state_service import get_all_states
 
 site_users = set()
 
-
 def register(ws):
     site_users.add(ws)
 

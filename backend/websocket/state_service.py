@@ -30,6 +30,7 @@ def get_operators_queue():
         operators_data.append({
             "id": operator_id,
             "name": operator_info.get("name", ""),
+            "status": operator_info.get("status", ""),
             "ringing_call_id": operator_info.get("ringing_call_id", ""),
             "accepted_call_id": operator_info.get("accepted_call_id", "")
         })
@@ -54,11 +55,13 @@ def get_ringing_calls_list():
             "id": call_id,
             "client": {
                 "id": client_id,
-                "name": client_info.get("name", "")
+                "name": client_info.get("name", ""),
+                "status": client_info.get("status", "")
             },
             "operator": {
                 "id": operator_id,
-                "name": operator_info.get("name", "")
+                "name": operator_info.get("name", ""),
+                "status": operator_info.get("status", "")
             }
         })
 
@@ -83,11 +86,13 @@ def get_accepted_calls_list():
             "id": call_id,
             "client": {
                 "id": client_id,
-                "name": client_info.get("name", "")
+                "name": client_info.get("name", ""),
+                "status": client_info.get("status", "")
             },
             "operator": {
                 "id": operator_id,
-                "name": operator_info.get("name", "")
+                "name": operator_info.get("name", ""),
+                "status": operator_info.get("status", "")
             }
         })
 
