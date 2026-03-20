@@ -106,8 +106,8 @@ function updateOperatorList(operators) {
   operators.forEach((operator, index) => {
     const li = document.createElement("li");
     li.innerHTML = `
-      <strong>#${index + 1} - ${operator.name || operator.id}</strong><br/>
-      <small>Status: ${operator.status || ""} | Ringing ID: ${operator.ringing_call_id || "none"}</small>
+      <strong>#${index + 1} - ${operator.name}</strong><br/>
+      <small>Status: ${operator.status} | ID: ${operator.id}</small>
     `;
     ul.appendChild(li);
   });
@@ -171,7 +171,7 @@ function updateAcceptedList(calls) {
     const li = document.createElement("li");
     li.innerHTML = `
       <strong>Accepted ID: ${call.id}</strong><br/>
-      <small>${call.operator.name || call.operator.id} ↔ ${call.client.name || call.client.id}</small>
+      <small>Operator: ${call.operator.name} (${call.operator.id}) → Client: ${call.client.name} (${call.client.id})</small>
     `;
     ul.appendChild(li);
   });

@@ -21,16 +21,14 @@ def create_ringing_call(client_id, operator_id):
 
 
 def find_client_id_for_ringing_call(operator_id):
-    ringing_call_id = r.get(f"operator:{operator_id}:ringing_call_id")
-    return r.get(f"ringing:{ringing_call_id}:client_id")
+    ringing_call_id = r.hget(f"operator:{operator_id}", "ringing_call_id")
+    return r.hget(f"ringing:{ringing_call_id}", "client_id")
 
 
 def remove_ringing_call(operator_id):
-    call_id = r.get(f"operator:{operator_id}:ringing_call_id")
+    call_id = r.hget(f"operator:{operator_id}", "ringing_call_id")
 
     r.lrem("list:ringing_calls", 0, call_id)
-    r.delete(f"ringing-{call_id}")
+    r.delete(f"ringing:{call_id}")
 
-    r.hset(f"operator:{operator_id}", mapping={
-        "ringing_call_id": None
-    })
+    r.hdel(f"operator:{operator_id}", "ringing_call_id")

@@ -5,7 +5,6 @@ from backend.websocket.state_broadcaster import update_all
 #operator status: available, ringing, on-call
 
 def add_operator(operator_id, name):
-    name = name or ""
     r.hset(f"operator:{operator_id}", mapping={
         "id": operator_id,
         "name": name,

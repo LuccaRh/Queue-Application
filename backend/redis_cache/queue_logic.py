@@ -3,7 +3,6 @@ from backend.redis_cache.rd_ringing_calls import create_ringing_call
 from backend.redis_cache.rd_ringing_calls import find_client_id_for_ringing_call
 from backend.redis_cache.rd_ringing_calls import remove_ringing_call
 from backend.redis_cache.rd_accepted_calls import create_accepted_call
-from backend.redis_cache.rd_accepted_calls import find_accepted_call_for_operator
 from backend.websocket.state_broadcaster import update_all
 
 def get_next_operator(client_id):
@@ -32,7 +31,7 @@ def match_call():
     print(f"Call {client_id} ringing for operator {operator_id}.")
 
     r.lpop("queue:clients")
-    r.lpop("queue:operators") 
+    r.lrem("queue:operators", 1, operator_id)
 
     create_ringing_call(client_id, operator_id)
     update_all()
