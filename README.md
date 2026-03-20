@@ -5,20 +5,22 @@ Its emphasys is in backend, so there is just a basic frontend to show how it wor
 that had to be made for it.
 
 
-# How it works
-## What should it do
-## Frontend demonstration
-## logic behind it
+## How it works
+### What should it do
+### Frontend demonstration
+### logic behind it
 
-# How it was made
-## initial ideas
-## research
-## postgresql basic structure
-## figma whiteboard
+## How it was made
+### initial ideas
+### research
+### postgresql basic structure
+[database diagram made](https://drawsql.app/teams/lucca-workspace/diagrams/queue-application)
+### figma whiteboard
+[figma whiteboard used](https://www.figma.com/design/Pnb6N5tWHV7f6zeXKQsbSt/Queue-Application?node-id=0-1&t=2h58AaQQfvlSIqqt-1)
 
-# Techs used
-## Wsl
-## Docker
+## Techs used
+### Wsl
+### Docker
 ## Postgresql
 ## Twisted
 ## Redis
