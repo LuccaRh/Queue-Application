@@ -4,6 +4,9 @@ from backend.resources.clients import ClientResource
 from backend.resources.operators import OperatorResource
 from backend.redis_cache.redis_server import connect_redis
 import os
+from autobahn.twisted.resource import WebSocketResource
+from autobahn.twisted.websocket import WebSocketServerFactory
+from backend.websocket.ws import QueueWSProtocol
 
 if os.getenv("DEBUG") == "1":
     import debugpy
@@ -18,6 +21,10 @@ connect_redis()
 root = resource.Resource()
 root.putChild(b"clients", ClientResource())
 root.putChild(b"operators", OperatorResource())
+
+ws_factory = WebSocketServerFactory("ws://localhost:8000/ws")
+ws_factory.protocol = QueueWSProtocol
+root.putChild(b"ws", WebSocketResource(ws_factory))
 
 site = server.Site(root)
 

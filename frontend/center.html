@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Full Pannel</title>
+  <style>
+    @import "center.css";
+  </style>
+  <script src="center.js"></script>
+</head>
+
+<body>
+
+<div class="top-controls">
+  <div class="panel control">
+    <h2>Create Client</h2>
+    <form id="clientform">
+      <input type="text" id="clientName" placeholder="Client name" required>
+      <button type="submit">Add Client</button>
+    </form>
+  </div>
+
+  <div class="panel control">
+    <h2>Create Operator</h2>
+      <form id="operatorform">
+        <label>Name:</label>
+        <input type="text" id="operatorName" required>
+        <button type="submit">Create operator</button>
+      </form>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="panel">
+    <h2>Client Queue</h2>
+    <ul id="clients"></ul>
+  </div>
+
+  <div class="panel">
+    <h2>Operators</h2>
+    <ul id="operators"></ul>
+  </div>
+
+  <div class="panel">
+    <h2>Ringing Calls</h2>
+    <ul id="ringing"></ul>
+  </div>
+
+  <div class="panel">
+    <h2>Accepted Calls</h2>
+    <ul id="accepted"></ul>
+  </div>
+</div>
+
+</body>
+</html>

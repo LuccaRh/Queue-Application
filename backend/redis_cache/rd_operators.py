@@ -1,9 +1,11 @@
 from backend.redis_cache.redis_server import r
 from backend.redis_cache.queue_logic import match_call
+from backend.websocket.state_broadcaster import update_all
 
 #operator status: available, ringing, on-call
 
 def add_operator(operator_id, name):
+    name = name or ""
     r.hset(f"operator:{operator_id}", mapping={
         "id": operator_id,
         "name": name,
@@ -13,3 +15,4 @@ def add_operator(operator_id, name):
     })
     r.rpush("queue:operators", operator_id)
     match_call()
+    update_all()
