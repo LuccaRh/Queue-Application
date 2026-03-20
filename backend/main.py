@@ -18,9 +18,15 @@ if os.getenv("DEBUG") == "1":
 
 connect_redis()
 
+from backend.resources.state import StateResource
+from backend.resources.call_control import AcceptResource, RejectResource
+
 root = resource.Resource()
 root.putChild(b"clients", ClientResource())
 root.putChild(b"operators", OperatorResource())
+root.putChild(b"state", StateResource())
+root.putChild(b"accept", AcceptResource())
+root.putChild(b"reject", RejectResource())
 
 ws_factory = WebSocketServerFactory("ws://localhost:8000/ws")
 ws_factory.protocol = QueueWSProtocol

@@ -1,33 +1,75 @@
-const socket = new WebSocket("ws://localhost:8000/ws");
+document.addEventListener("DOMContentLoaded", () => {
+  const socket = new WebSocket("ws://localhost:8000/ws");
 
-socket.onopen = function() {
-  document.getElementById("wsStatus").textContent = "✓ Connected";
-};
+  socket.onopen = function() {
+    const status = document.getElementById("wsStatus");
+    if (status) status.textContent = "✓ Connected";
+  };
 
-socket.onclose = function() {
-  document.getElementById("wsStatus").textContent = "✗ Disconnected";
-};
+  socket.onclose = function() {
+    const status = document.getElementById("wsStatus");
+    if (status) status.textContent = "✗ Disconnected";
+  };
 
-socket.onmessage = function(event) {
-  try {
-    const msg = JSON.parse(event.data);
-    if (msg.data && msg.data.clients_queue) {
-      updateClientList(msg.data.clients_queue);
+  socket.onmessage = function(event) {
+    try {
+      const msg = JSON.parse(event.data);
+      if (msg.data && msg.data.clients_queue) {
+        updateClientList(msg.data.clients_queue);
+      }
+      if (msg.data && msg.data.operators_queue) {
+        updateOperatorList(msg.data.operators_queue);
+      }
+      if (msg.data && msg.data.ringing_calls) {
+        updateRingingList(msg.data.ringing_calls);
+      }
+      if (msg.data && msg.data.accepted_calls) {
+        updateAcceptedList(msg.data.accepted_calls);
+      }
+    } catch (err) {
+      console.error("Parse error:", err);
     }
-    if (msg.data && msg.data.operators_queue) {
-      updateOperatorList(msg.data.operators_queue);
-    }
-    if (msg.data && msg.data.ringing_calls) {
-      updateRingingList(msg.data.ringing_calls);
-    }
-    if (msg.data && msg.data.accepted_calls) {
-      updateAcceptedList(msg.data.accepted_calls);
-    }
+  };
 
-  } catch (err) {
-    console.error("Parse error:", err);
+  const clientForm = document.getElementById("clientform");
+  if (clientForm) {
+    clientForm.addEventListener("submit", async function(event) {
+      event.preventDefault();
+      const name = document.getElementById("clientName").value;
+      try {
+        await fetch("http://localhost:8000/clients", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name })
+        });
+        document.getElementById("clientName").value = "";
+      } catch (err) {
+        console.error("Error creating client:", err);
+      }
+    });
   }
-};
+
+  const operatorForm = document.getElementById("operatorform");
+  if (operatorForm) {
+    operatorForm.addEventListener("submit", async function(event) {
+      event.preventDefault();
+      const name = document.getElementById("operatorName").value;
+      try {
+        const response = await fetch("http://localhost:8000/operators", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name })
+        });
+        const data = await response.json();
+        console.log(data);
+        if (data.message) alert(data.message);
+        document.getElementById("operatorName").value = "";
+      } catch (err) {
+        console.error("Error creating operator:", err);
+      }
+    });
+  }
+});
 
 function updateClientList(clients) {
   const ul = document.getElementById("clients");
@@ -46,7 +88,7 @@ function updateClientList(clients) {
     
     li.innerHTML = `
       <strong>#${index + 1} - ${client.name || client.id}</strong><br/>
-      <small>Status: ${client.status} | Tried: ${tried}</small>
+      <small>Id: ${client.id} | Status: ${client.status} | Tried: ${tried}</small>
     `;
     ul.appendChild(li);
   });
@@ -84,10 +126,36 @@ function updateRingingList(calls) {
     const li = document.createElement("li");
     li.innerHTML = `
       <strong>Ringing ID: ${call.id}</strong><br/>
-      <small>${call.operator.name || call.operator.id} → ${call.client.name || call.client.id}</small>
+      <small>Operator: ${call.operator.name} (${call.operator.id}) → Client: ${call.client.name} (${call.client.id})</small><br/>
+      <button onclick="acceptCall('${call.operator.id}')">Accept</button>
+      <button onclick="rejectCall('${call.operator.id}')">Reject</button>
     `;
     ul.appendChild(li);
   });
+}
+
+async function acceptCall(operatorId) {
+  try {
+    await fetch("http://localhost:8000/accept", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({operator: operatorId})
+    });
+  } catch (err) {
+    console.error("Error accepting call:", err);
+  }
+}
+
+async function rejectCall(operatorId) {
+  try {
+    await fetch("http://localhost:8000/reject", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({operator: operatorId})
+    });
+  } catch (err) {
+    console.error("Error rejecting call:", err);
+  }
 }
 
 function updateAcceptedList(calls) {
@@ -108,42 +176,3 @@ function updateAcceptedList(calls) {
     ul.appendChild(li);
   });
 }
-
-
-document.getElementById("clientform").addEventListener("submit", async function(event) {
-  event.preventDefault();
-  
-  const name = document.getElementById("clientName").value;
-  
-  try {
-    await fetch("http://localhost:8000/clients", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name })
-    });
-    
-    document.getElementById("clientName").value = "";
-  } catch (err) {
-    console.error("Error creating client:", err);
-  }
-});
-
-document.getElementById("operatorform").addEventListener("submit", async function(event) {
-  event.preventDefault();
-
-  const name = document.getElementById("operatorName").value;
-
-  const response = await fetch("http://localhost:8000/operators", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      name: name
-    })
-  });
-
-  const data = await response.json();
-  console.log(data);
-  alert(data.message);
-});

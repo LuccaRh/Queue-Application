@@ -96,7 +96,7 @@ def get_accepted_calls_list():
     }
 
 
-def get_state():
+def get_all_states():
     state = {}
     state.update(get_clients_queue())
     state.update(get_operators_queue())

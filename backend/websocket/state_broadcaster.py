@@ -1,8 +1,5 @@
 import json
-from backend.websocket.state_service import get_clients_queue
-from backend.websocket.state_service import get_operators_queue
-from backend.websocket.state_service import get_ringing_calls_list
-from backend.websocket.state_service import get_accepted_calls_list
+from backend.websocket.state_service import get_all_states
 
 site_users = set()
 
@@ -13,6 +10,9 @@ def register(ws):
 
 def unregister(ws):
     site_users.discard(ws)
+
+def onClose(ws):
+    update_all()
 
 
 def broadcast(message):
@@ -29,24 +29,6 @@ def broadcast(message):
         site_users.discard(single_site_user)
 
 
-def update_clients_queue():
-    state = get_clients_queue()
-    broadcast({"type": "state", "data": state})
-
-def update_operators_queue():
-    state = get_operators_queue()
-    broadcast({"type": "state", "data": state})
-
-def update_ringing_calls():
-    state = get_ringing_calls_list()
-    broadcast({"type": "state", "data": state})
-
-def update_accepted_calls():
-    state = get_accepted_calls_list()
-    broadcast({"type": "state", "data": state})
-
 def update_all():
-    update_clients_queue()
-    update_operators_queue()
-    update_ringing_calls()
-    update_accepted_calls()
+    state = get_all_states()
+    broadcast({"type": "state", "data": state})
