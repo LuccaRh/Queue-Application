@@ -27,3 +27,10 @@ that had to be made for it.
 ## WebSocket
 ## Debugpy
 
+## Possible improvements
+### frontend
+### timeout detection
+### deploy on github, github actions, and work on branchs
+### virtual machine to work as a production code
+### more pages customized for client and operator
+### signing and login
