@@ -20,7 +20,7 @@ class OperatorResource(BaseResource):
 
         def success(operator_id):
             request.setHeader(b"content-type", b"application/json")
-            request.write(json.dumps({"status": "ok", "message": "nome nome nome!"}).encode())
+            request.write(json.dumps({"status": "ok", "message": "operator created!"}).encode())
             add_operator(operator_id, name)
             request.finish()
 

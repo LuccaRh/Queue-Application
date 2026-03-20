@@ -20,7 +20,7 @@ class ClientResource(BaseResource):
 
         def success(client_id):
             request.setHeader(b"content-type", b"application/json")
-            request.write(json.dumps({"status": "ok", "message": "nome nome nome!"}).encode())
+            request.write(json.dumps({"status": "ok", "message": "client created!"}).encode())
             add_client(client_id, name)
             request.finish()
 

@@ -8,7 +8,7 @@ from autobahn.twisted.resource import WebSocketResource
 from autobahn.twisted.websocket import WebSocketServerFactory
 from backend.websocket.ws import QueueWSProtocol
 from backend.websocket.minichat import ChatServerProtocol
-from backend.resources.call_control import HangupClientResource
+from backend.resources.call_control import HangupClientResource, HangupOperatorResource
 from backend.resources.call_control import AcceptResource, RejectResource
 
 if os.getenv("DEBUG") == "1":
@@ -28,6 +28,7 @@ root.putChild(b"operators", OperatorResource())
 root.putChild(b"accept", AcceptResource())
 root.putChild(b"reject", RejectResource())
 root.putChild(b"hangup_client", HangupClientResource())
+root.putChild(b"hangup_operator", HangupOperatorResource())
 
 ws_factory = WebSocketServerFactory("ws://localhost:8000/ws")
 ws_factory.protocol = QueueWSProtocol

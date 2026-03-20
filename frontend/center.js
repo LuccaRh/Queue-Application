@@ -115,7 +115,7 @@ function updateClientList(clients) {
     li.innerHTML = `
       <strong>#${index + 1} - ${client.name || client.id}</strong><br/>
       <small>Id: ${client.id} | Status: ${client.status} | Tried: ${tried}</small>
-      <button onclick="hangupCall('${client.id}')">Hang up</button>
+      <button onclick="hangupCallClient('${client.id}')">Hang up</button>
     `;
     ul.appendChild(li);
   });
@@ -177,7 +177,7 @@ function updateAcceptedList(calls) {
       <strong>Accepted ID: ${call.id}</strong><br/>
       <small>Operator: ${call.operator.name} (${call.operator.id}) → Client: ${call.client.name} (${call.client.id})</small>
       <small> OperatorStatus: ${call.operator.status} | ClientStatus: ${call.client.status}</small><br/>
-      <button onclick="hangupCall('${call.client.id}')">Hang up</button>
+      <button onclick="hangupCallOperator('${call.client.id}')">Hang up</button>
     `;
     ul.appendChild(li);
   });
@@ -207,9 +207,21 @@ async function rejectCall(operatorId) {
   }
 }
 
-async function hangupCall(clientId) {
+async function hangupCallClient(clientId) {
   try {
     await fetch("http://localhost:8000/hangup_client", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({client: clientId})
+    });
+  } catch (err) {
+    console.error("Error hanging up call:", err);
+  }
+}
+
+async function hangupCallOperator(clientId) {
+  try {
+    await fetch("http://localhost:8000/hangup_operator", {
       method: "POST",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({client: clientId})
