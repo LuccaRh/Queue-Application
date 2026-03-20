@@ -114,7 +114,7 @@ function updateClientList(clients) {
     
     li.innerHTML = `
       <strong>#${index + 1} - ${client.name || client.id}</strong><br/>
-      <small>Id: ${client.id} | Status: ${client.status} | Tried: ${tried}</small>
+      <small>Id: ${client.id} | Status: ${client.status} | Tried: ${tried}</small><br/>
       <button onclick="hangupCallClient('${client.id}')">Hang up</button>
     `;
     ul.appendChild(li);
@@ -175,7 +175,7 @@ function updateAcceptedList(calls) {
     const li = document.createElement("li");
     li.innerHTML = `
       <strong>Accepted ID: ${call.id}</strong><br/>
-      <small>Operator: ${call.operator.name} (${call.operator.id}) → Client: ${call.client.name} (${call.client.id})</small>
+      <small>Operator: ${call.operator.name} (${call.operator.id}) → Client: ${call.client.name} (${call.client.id})</small><br/>
       <small> OperatorStatus: ${call.operator.status} | ClientStatus: ${call.client.status}</small><br/>
       <button onclick="hangupCallOperator('${call.client.id}')">Hang up</button>
     `;

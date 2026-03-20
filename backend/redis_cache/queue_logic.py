@@ -23,15 +23,15 @@ def match_call():
     client_id = r.lindex("queue:clients", 0)
     if client_id: 
         operator_id = get_next_operator(client_id) 
-        broadcast_message(f"Call {client_id} received.")
     else: 
         return None
 
     if not client_id or not operator_id:
-        broadcast_message(f"Call {client_id} waiting in queue.") if client_id else None
         return None
     
-    broadcast_message(f"Call {client_id} ringing for operator {operator_id}.")
+    client_name = r.hget(f"client:{client_id}", "name")
+    operator_name = r.hget(f"operator:{operator_id}", "name")
+    broadcast_message(f"Call {client_name} ringing for operator {operator_name}")
 
     r.lpop("queue:clients")
     r.lrem("queue:operators", 1, operator_id)
@@ -43,13 +43,18 @@ def match_call():
 
 def answer_call(operator_id):
     client_id = find_client_id_for_ringing_call(operator_id)
-    broadcast_message(f"Call {client_id} accepted by operator {operator_id}")
+    client_name = r.hget(f"client:{client_id}", "name")
+    operator_name = r.hget(f"operator:{operator_id}", "name")
+    broadcast_message(f"Call {client_name} answered by operator {operator_name}")
     create_accepted_call(client_id, operator_id)
     remove_ringing_call(operator_id)
     update_all()
 
 def reject_call(operator_id):
     client_id = find_client_id_for_ringing_call(operator_id)
+    client_name = r.hget(f"client:{client_id}", "name")
+    operator_name = r.hget(f"operator:{operator_id}", "name")
+    broadcast_message(f"Call {client_name} rejected by operator {operator_name}")
     r.lpush("queue:clients", client_id)
     r.lpush("queue:operators", operator_id)
     remove_ringing_call(operator_id)
@@ -58,14 +63,16 @@ def reject_call(operator_id):
 
 def hangup_call_client(client_id):
     operator_id = find_operator_id_for_accepted_call(client_id)
+    client_name = r.hget(f"client:{client_id}", "name")
     #If client is in call
     if operator_id:
         remove_accepted_call(operator_id, client_id)
         r.lpush("queue:operators", operator_id)
-        broadcast_message(f"Call {client_id} finished. Operator {operator_id} available.")
+        operator_name = r.hget(f"operator:{operator_id}", "name")
+        broadcast_message(f"Call {client_name} finished and operator {operator_name} available.")
         match_call()
     #If client is waiting
     else:
         r.lrem("queue:clients", 0, client_id)
-        broadcast_message(f"Call {client_id} missed.")
+        broadcast_message(f"Call {client_name} missed.")
     update_all()
